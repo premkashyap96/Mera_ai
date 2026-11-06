@@ -1,0 +1,68 @@
+
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mera AI</title>
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+  background: #101522;
+  color: white;
+  text-align: center;
+}
+.container {
+  padding: 25px;
+}
+h1 { color: #45d6a0; }
+#chat {
+  height: 55vh;
+  overflow-y: auto;
+  background: #202a3b;
+  padding: 12px;
+  border-radius: 12px;
+  text-align: left;
+}
+input {
+  width: 65%;
+  padding: 14px;
+  border-radius: 10px;
+  border: none;
+}
+button {
+  padding: 14px;
+  background: #45d6a0;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>🤖 Mera AI</h1>
+<p>Namaste! Main aapka AI chatbot hoon.</p>
+<div id="chat">
+<p><b>Mera AI:</b> Namaste! Mujhse kuch bhi poochiye.</p>
+</div>
+<br>
+<input id="msg" placeholder="Apna sawal likhein...">
+<button onclick="sendMsg()">Send</button>
+</div>
+<script>
+function sendMsg() {
+ let input = document.getElementById("msg");
+ let chat = document.getElementById("chat");
+ let message = input.value.trim();
+ if (!message) return;
+ chat.innerHTML += "<p><b>Aap:</b> " +
+ message.replace(/</g,"&lt;") + "</p>";
+ chat.innerHTML += "<p><b>Mera AI:</b> Aapka sawal mil gaya! AI jawab dene ki suvidha jald jodeinge.</p>";
+ input.value = "";
+ chat.scrollTop = chat.scrollHeight;
+}
+</script>
+</body>
+</html>
