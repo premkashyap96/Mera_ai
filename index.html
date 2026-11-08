@@ -6,62 +6,117 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mera AI</title>
 <style>
-body {
-  margin: 0;
-  font-family: Arial;
-  background: #101522;
-  color: white;
-  text-align: center;
+*{box-sizing:border-box}
+body{
+ margin:0;background:#101522;color:white;
+ font-family:Arial,sans-serif;
 }
-.container {
-  padding: 25px;
+header{
+ padding:18px;background:#202a3b;
+ display:flex;justify-content:space-between;
+ align-items:center;font-size:22px;
 }
-h1 { color: #45d6a0; }
-#chat {
-  height: 55vh;
-  overflow-y: auto;
-  background: #202a3b;
-  padding: 12px;
-  border-radius: 12px;
-  text-align: left;
+header span{color:#45d6a0}
+#chat{
+ height:72vh;overflow-y:auto;padding:15px;
 }
-input {
-  width: 65%;
-  padding: 14px;
-  border-radius: 10px;
-  border: none;
+.msg{
+ padding:13px;margin:12px 0;
+ border-radius:14px;max-width:88%;
+ line-height:1.5;white-space:pre-wrap;
 }
-button {
-  padding: 14px;
-  background: #45d6a0;
-  border: none;
-  border-radius: 10px;
-  font-weight: bold;
+.user{background:#315caa;margin-left:auto}
+.ai{background:#263247;margin-right:auto}
+.bottom{
+ position:fixed;bottom:0;left:0;width:100%;
+ padding:12px;background:#202a3b;
+ display:flex;gap:8px;align-items:center;
 }
+input{
+ flex:1;min-width:0;padding:14px;
+ border:0;border-radius:12px;
+ font-size:16px;
+}
+button{
+ border:0;border-radius:12px;
+ padding:13px;background:#45d6a0;
+ font-size:17px;font-weight:bold;
+}
+#voice{background:#315caa;color:white}
+#send{color:#101522}
 </style>
 </head>
 <body>
-<div class="container">
-<h1>🤖 Mera AI</h1>
-<p>Namaste! Main aapka AI chatbot hoon.</p>
+
+<header>
+ <div>🤖 <span>Mera AI</span></div>
+ <div>● Online</div>
+</header>
+
 <div id="chat">
-<p><b>Mera AI:</b> Namaste! Mujhse kuch bhi poochiye.</p>
+ <div class="msg ai">
+ नमस्ते! 👋 मैं Mera AI हूँ।
+ मुझसे कुछ भी पूछिए।
+ आप लिखकर या बोलकर बात कर सकते हैं।
+ </div>
 </div>
-<br>
-<input id="msg" placeholder="Apna sawal likhein...">
-<button onclick="sendMsg()">Send</button>
+
+<div class="bottom">
+ <button id="voice" onclick="startVoice()">🎤</button>
+ <input id="msg" placeholder="अपना सवाल लिखें..."
+ onkeydown="if(event.key==='Enter')sendMsg()">
+ <button id="send" onclick="sendMsg()">➤</button>
 </div>
+
 <script>
-function sendMsg() {
- let input = document.getElementById("msg");
- let chat = document.getElementById("chat");
- let message = input.value.trim();
- if (!message) return;
- chat.innerHTML += "<p><b>Aap:</b> " +
- message.replace(/</g,"&lt;") + "</p>";
- chat.innerHTML += "<p><b>Mera AI:</b> Aapka sawal mil gaya! AI jawab dene ki suvidha jald jodeinge.</p>";
- input.value = "";
- chat.scrollTop = chat.scrollHeight;
+const chat=document.getElementById("chat");
+
+function addMessage(text,type){
+ let div=document.createElement("div");
+ div.className="msg "+type;
+ div.textContent=text;
+ chat.appendChild(div);
+ chat.scrollTop=chat.scrollHeight;
+}
+
+function speak(text){
+ if("speechSynthesis" in window){
+  speechSynthesis.cancel();
+  let speech=new SpeechSynthesisUtterance(text);
+  speech.lang="hi-IN";
+  speechSynthesis.speak(speech);
+ }
+}
+
+async function sendMsg(){
+ let input=document.getElementById("msg");
+ let message=input.value.trim();
+ if(!message)return;
+
+ addMessage(message,"user");
+ input.value="";
+
+ // AI backend will be connected here.
+ addMessage("आपका सवाल मिल गया! Mera AI का असली AI सर्वर अभी कनेक्ट करना बाकी है।","ai");
+}
+
+function startVoice(){
+ const SpeechRecognition =
+ window.SpeechRecognition ||
+ window.webkitSpeechRecognition;
+
+ if(!SpeechRecognition){
+  alert("आपके ब्राउज़र में Voice सुविधा उपलब्ध नहीं है।");
+  return;
+ }
+
+ let recognition=new SpeechRecognition();
+ recognition.lang="hi-IN";
+ recognition.onresult=function(event){
+  document.getElementById("msg").value=
+  event.results[0][0].transcript;
+ };
+ recognition.start();
 }
 </script>
 </body>
